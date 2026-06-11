@@ -1,3 +1,23 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Category, Product, File
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['parent', 'title', 'is_enabled', 'created_time']
+    list_filter = ['is_enabled', 'parent', 'created_time']
+    search_fields = ['title']
+
+class FileinlineAdmin(admin.StackedInline):
+    model = File
+    fields = ['title', 'file', 'is_enabled']
+    extra = 1
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_enabled', 'created_time']
+    list_filter = ['is_enabled', 'created_time']
+    filter_horizontal = ['categories']
+    search_fields = ['title']
+    inlines = [FileinlineAdmin]
